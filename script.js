@@ -56,7 +56,7 @@ function initAudio() {
         gainNode = audioContext.createGain();
 
         // 200 % hlasitost
-        gainNode.gain.value = 2.0;
+        gainNode.gain.value = 4.0;
 
         gainNode.connect(audioContext.destination);
     }
