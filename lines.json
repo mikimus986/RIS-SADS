@@ -1,3 +1,4 @@
+```json
 {
     "407": {
         "number": "407",
@@ -5,67 +6,177 @@
         "01": {
             "name": "Brno, Ústřední hřbitov",
             "stops": [
-                "Střelice, nádraží",
-                "Střelice, Jaroslava svobody",
-                "Střelice, Nákupní středisko",
-                "Střelice, Obecní úřad",
-                "Střelice, Nebovidská",
-                "Nebovidy, u kostela",
-                "Moravany, hlavní",
-                "Brno, OC Futurum",
-                "Brno, Ústřední hřbitov"
+                {
+                    "name": "Střelice, nádraží",
+                    "sound": "sounds/strelice-nadrazi.mp3"
+                },
+                {
+                    "name": "Střelice, Jaroslava svobody",
+                    "sound": "sounds/strelice-jaroslava-svobody.mp3"
+                },
+                {
+                    "name": "Střelice, Nákupní středisko",
+                    "sound": "sounds/strelice-nakupni-stredisko.mp3"
+                },
+                {
+                    "name": "Střelice, Obecní úřad",
+                    "sound": "sounds/strelice-obecni-urad.mp3"
+                },
+                {
+                    "name": "Střelice, Nebovidská",
+                    "sound": "sounds/strelice-nebovidska.mp3"
+                },
+                {
+                    "name": "Nebovidy, u kostela",
+                    "sound": "sounds/nebovidy-u-kostela.mp3"
+                },
+                {
+                    "name": "Moravany, hlavní",
+                    "sound": "sounds/moravany-hlavni.mp3"
+                },
+                {
+                    "name": "Brno, OC Futurum",
+                    "sound": "sounds/brno-oc-futurum.mp3"
+                },
+                {
+                    "name": "Brno, Ústřední hřbitov",
+                    "sound": "sounds/brno-ustredni-hrbitov.mp3"
+                }
             ]
         },
 
         "02": {
             "name": "Střelice, nádraží",
             "stops": [
-                "Brno, Ústřední hřbitov",
-                "Brno, OC Futurum",
-                "Moravany, hlavní",
-                "Nebovidy, u kostela",
-                "Střelice, Nebovidská",
-                "Střelice, Obecní úřad",
-                "Střelice, Nákupní středisko",
-                "Střelice, Jaroslava svobody",
-                "Střelice, nádraží"
+                {
+                    "name": "Brno, Ústřední hřbitov",
+                    "sound": "sounds/brno-ustredni-hrbitov.mp3"
+                },
+                {
+                    "name": "Brno, OC Futurum",
+                    "sound": "sounds/brno-oc-futurum.mp3"
+                },
+                {
+                    "name": "Moravany, hlavní",
+                    "sound": "sounds/moravany-hlavni.mp3"
+                },
+                {
+                    "name": "Nebovidy, u kostela",
+                    "sound": "sounds/nebovidy-u-kostela.mp3"
+                },
+                {
+                    "name": "Střelice, Nebovidská",
+                    "sound": "sounds/strelice-nebovidska.mp3"
+                },
+                {
+                    "name": "Střelice, Obecní úřad",
+                    "sound": "sounds/strelice-obecni-urad.mp3"
+                },
+                {
+                    "name": "Střelice, Nákupní středisko",
+                    "sound": "sounds/strelice-nakupni-stredisko.mp3"
+                },
+                {
+                    "name": "Střelice, Jaroslava svobody",
+                    "sound": "sounds/strelice-jaroslava-svobody.mp3"
+                },
+                {
+                    "name": "Střelice, nádraží",
+                    "sound": "sounds/strelice-nadrazi.mp3"
+                }
             ]
         },
 
         "03": {
             "name": "Střelice, Nebovidská",
             "stops": [
-                "Střelice, nádraží",
-                "Střelice, Jaroslava svobody",
-                "Střelice, Nákupní středisko",
-                "Střelice, Obecní úřad",
-                "Střelice, Nebovidská"
+                {
+                    "name": "Střelice, nádraží",
+                    "sound": "sounds/strelice-nadrazi.mp3"
+                },
+                {
+                    "name": "Střelice, Jaroslava svobody",
+                    "sound": "sounds/strelice-jaroslava-svobody.mp3"
+                },
+                {
+                    "name": "Střelice, Nákupní středisko",
+                    "sound": "sounds/strelice-nakupni-stredisko.mp3"
+                },
+                {
+                    "name": "Střelice, Obecní úřad",
+                    "sound": "sounds/strelice-obecni-urad.mp3"
+                },
+                {
+                    "name": "Střelice, Nebovidská",
+                    "sound": "sounds/strelice-nebovidska.mp3"
+                }
             ]
         },
 
         "04": {
             "name": "Střelice, nádraží",
             "stops": [
-                "Brno, OC Futurum",
-                "Moravany, hlavní",
-                "Nebovidy, u kostela",
-                "Střelice, Nebovidská",
-                "Střelice, Obecní úřad",
-                "Střelice, Nákupní středisko",
-                "Střelice, Jaroslava svobody",
-                "Střelice, nádraží"
+                {
+                    "name": "Brno, OC Futurum",
+                    "sound": "sounds/brno-oc-futurum.mp3"
+                },
+                {
+                    "name": "Moravany, hlavní",
+                    "sound": "sounds/moravany-hlavni.mp3"
+                },
+                {
+                    "name": "Nebovidy, u kostela",
+                    "sound": "sounds/nebovidy-u-kostela.mp3"
+                },
+                {
+                    "name": "Střelice, Nebovidská",
+                    "sound": "sounds/strelice-nebovidska.mp3"
+                },
+                {
+                    "name": "Střelice, Obecní úřad",
+                    "sound": "sounds/strelice-obecni-urad.mp3"
+                },
+                {
+                    "name": "Střelice, Nákupní středisko",
+                    "sound": "sounds/strelice-nakupni-stredisko.mp3"
+                },
+                {
+                    "name": "Střelice, Jaroslava svobody",
+                    "sound": "sounds/strelice-jaroslava-svobody.mp3"
+                },
+                {
+                    "name": "Střelice, nádraží",
+                    "sound": "sounds/strelice-nadrazi.mp3"
+                }
             ]
         },
 
         "05": {
             "name": "Střelice, nádraží",
             "stops": [
-                "Střelice, Nebovidská",
-                "Střelice, Obecní úřad",
-                "Střelice, Nákupní středisko",
-                "Střelice, Jaroslava Svobody",
-                "Střelice, nádraží"
+                {
+                    "name": "Střelice, Nebovidská",
+                    "sound": "sounds/strelice-nebovidska.mp3"
+                },
+                {
+                    "name": "Střelice, Obecní úřad",
+                    "sound": "sounds/strelice-obecni-urad.mp3"
+                },
+                {
+                    "name": "Střelice, Nákupní středisko",
+                    "sound": "sounds/strelice-nakupni-stredisko.mp3"
+                },
+                {
+                    "name": "Střelice, Jaroslava svobody",
+                    "sound": "sounds/strelice-jaroslava-svobody.mp3"
+                },
+                {
+                    "name": "Střelice, nádraží",
+                    "sound": "sounds/strelice-nadrazi.mp3"
+                }
             ]
         }
     }
 }
+```
+
