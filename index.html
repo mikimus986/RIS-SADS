@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DPMA – Systém linek</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <main class="container">
+
+        <header>
+            <h1>DPMA</h1>
+            <p>Systém linek a zastávek</p>
+        </header>
+
+        <section class="panel">
+
+            <div class="input-area">
+                <label for="lineInput">Kód linky a směru</label>
+
+                <input
+                    id="lineInput"
+                    type="text"
+                    maxlength="5"
+                    inputmode="numeric"
+                    autocomplete="off"
+                    placeholder="Např. 02201"
+                    autofocus
+                >
+
+                <div class="hint">
+                    Zadej 3 číslice linky + 2 číslice směru a stiskni Enter
+                </div>
+            </div>
+
+            <div id="lineInfo" class="line-info hidden">
+                <div class="line-number" id="lineNumber">22</div>
+
+                <div class="direction">
+                    <span>SMĚR</span>
+                    <strong id="directionName">Strnadova</strong>
+                </div>
+            </div>
+
+            <div id="stopPanel" class="stop-panel hidden">
+
+                <div class="stop-counter" id="stopCounter">
+                    ZASTÁVKA 1 / 8
+                </div>
+
+                <div class="stop-name" id="stopName">
+                    Hlavní nádraží
+                </div>
+
+                <div class="controls">
+                    <div class="control">
+                        <kbd>+</kbd>
+                        <span>Další zastávka</span>
+                    </div>
+
+                    <div class="control">
+                        <kbd>Enter</kbd>
+                        <span>Potvrdit</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <div id="message" class="message"></div>
+
+        </section>
+
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
