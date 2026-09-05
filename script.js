@@ -1,3 +1,4 @@
+```javascript
 let linesData = {};
 
 let currentLine = null;
@@ -13,8 +14,71 @@ const directionName = document.getElementById("directionName");
 const stopPanel = document.getElementById("stopPanel");
 const stopCounter = document.getElementById("stopCounter");
 const stopName = document.getElementById("stopName");
-
 const message = document.getElementById("message");
+
+
+// ========================================
+// ZVUK AKTUÁLNÍ ZASTÁVKY
+// ========================================
+
+let currentAudio = null;
+
+function playStopSound(stop) {
+
+    // Pokud zastávka nemá zvuk
+    if (!stop || !stop.sound) {
+        console.log("Tato zastávka nemá nastavený zvuk.");
+        return;
+    }
+
+    // Zastavení předchozího zvuku
+    if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+    }
+
+    // Vytvoření nového zvuku
+    currentAudio = new Audio(stop.sound);
+
+    currentAudio.volume = 1.0;
+
+    currentAudio.play()
+        .then(() => {
+            console.log("Přehrávám zvuk:", stop.sound);
+        })
+        .catch(error => {
+            console.error(
+                "Zvuk se nepodařilo přehrát:",
+                error
+            );
+        });
+}
+
+
+// ========================================
+// POMOCNÁ FUNKCE PRO ZASTÁVKU
+// ========================================
+
+function getStopData(stop) {
+
+    // Nový formát:
+    // {
+    //     "name": "Střelice, nádraží",
+    //     "sound": "sounds/strelice-nadrazi.mp3"
+    // }
+
+    if (typeof stop === "object") {
+        return stop;
+    }
+
+    // Podpora starého formátu:
+    // "Střelice, nádraží"
+
+    return {
+        name: stop,
+        sound: null
+    };
+}
 
 
 // ========================================
@@ -94,7 +158,6 @@ function loadLine() {
 
     message.textContent = "";
 
-
     // ====================================
     // 99901 = SLUŽEBNÍ JÍZDA
     // ====================================
@@ -105,32 +168,28 @@ function loadLine() {
         currentDirection = null;
         currentStop = 0;
 
+        // Zastavení případného zvuku
+        if (currentAudio) {
+            currentAudio.pause();
+            currentAudio.currentTime = 0;
+        }
 
         // Skryj informace o lince
-
         lineInfo.classList.add("hidden");
 
-
         // Zobraz panel zastávky
-
         stopPanel.classList.remove("hidden");
 
-
         // Žádné číslo zastávky
-
         stopCounter.textContent = "";
 
-
         // Text služební jízdy
-
         stopName.textContent =
             "Služební jízda";
-
 
         stopName.classList.remove(
             "no-boarding"
         );
-
 
         return;
     }
@@ -157,7 +216,6 @@ function loadLine() {
 
     const lineCode =
         code.substring(0, 3);
-
 
     // Poslední 2 číslice = směr
 
@@ -188,6 +246,20 @@ function loadLine() {
             "Tento směr není u linky veden.";
 
         return;
+    }
+
+
+    // ====================================
+    // ZASTAVENÍ PŘEDCHOZÍHO ZVUKU
+    // ====================================
+
+    if (currentAudio) {
+
+        currentAudio.pause();
+
+        currentAudio.currentTime = 0;
+
+        currentAudio = null;
     }
 
 
@@ -226,7 +298,6 @@ function loadLine() {
 
     lineNumber.textContent =
         line.number;
-
 
     directionName.textContent =
         direction.name;
@@ -287,20 +358,34 @@ function showStop() {
     }
 
 
-    // Odstranění NENASTUPUJTE
+    // ====================================
+    // ZÍSKÁNÍ DAT ZASTÁVKY
+    // ====================================
+
+    const stop =
+        getStopData(stops[currentStop]);
+
+
+    // ====================================
+    // ODSTRANĚNÍ NENASTUPUJTE
+    // ====================================
 
     stopName.classList.remove(
         "no-boarding"
     );
 
 
-    // Zobrazení zastávky
+    // ====================================
+    // ZOBRAZENÍ ZASTÁVKY
+    // ====================================
 
     stopName.textContent =
-        stops[currentStop];
+        stop.name;
 
 
-    // Zobrazení počtu zastávek
+    // ====================================
+    // ZOBRAZENÍ POČTU ZASTÁVEK
+    // ====================================
 
     stopCounter.textContent =
         `ZASTÁVKA ${currentStop + 1} / ${stops.length}`;
@@ -316,9 +401,6 @@ function nextStop() {
     // ====================================
     // SLUŽEBNÍ JÍZDA
     // ====================================
-
-    // U 99901 nejsou žádné zastávky,
-    // takže + nic neudělá.
 
     if (
         currentLine === null &&
@@ -359,9 +441,6 @@ function nextStop() {
     // NENASTUPUJTE
     // ====================================
 
-    // Pokud už je zobrazeno
-    // NENASTUPUJTE, dál se nepokračuje.
-
     if (
         stopName.classList.contains(
             "no-boarding"
@@ -383,15 +462,22 @@ function nextStop() {
         stopName.textContent =
             "NENASTUPUJTE";
 
-
         stopName.classList.add(
             "no-boarding"
         );
 
-
         stopCounter.textContent =
             "KONEČNÁ ZASTÁVKA";
 
+        // Zastavení zvuku poslední zastávky
+        if (currentAudio) {
+
+            currentAudio.pause();
+
+            currentAudio.currentTime = 0;
+
+            currentAudio = null;
+        }
 
         return;
     }
@@ -403,5 +489,19 @@ function nextStop() {
 
     currentStop++;
 
+
+    // Zobrazíme novou zastávku
     showStop();
+
+
+    // ====================================
+    // PŘEHRÁNÍ ZVUKU NOVÉ ZASTÁVKY
+    // ====================================
+
+    const stop =
+        getStopData(stops[currentStop]);
+
+
+    playStopSound(stop);
 }
+```
