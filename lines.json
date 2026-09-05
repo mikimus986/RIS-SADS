@@ -1,2 +1,35 @@
+{
+    "407": {
+        "number": "407",
 
-                }
+        "01": {
+            "name": "Brno, Ústřední hřbitov",
+            "stops": [
+                "Střelice, nádraží",
+                "Střelice, Jaroslava svobody",
+                "Střelice, Nákupní středisko",
+                "Střelice, Obecní úřad",
+                "Střelice, Nebovidská",
+                "Nebovidy, u kostela",
+                "Moravany, hlavní",
+                "Brno, OC futurum",
+                "Brno, Ústřední hřbitov"
+            ]
+        },
+
+        "02": {
+            "name": "Střelice, nádraží",
+            "stops": [
+                "Brno, Ústřední hřbitov",
+                "Brno, OC futurum",
+                "Moravany, hlavní",
+                "Nebovidy, u kostela",
+                "Střelice, Nebovidská",
+                "Střelice, Obecní úřad",
+                "Střelice, Nákupní středisko",
+                "Střelice, Jaroslava svobody",
+                "Střelice, nádraží"
+            ]
+        }
+    }
+}
