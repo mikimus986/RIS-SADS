@@ -1,15 +1,16 @@
 let linesData = {};
-
 let currentLine = null;
 let currentDirection = null;
 let currentStop = 0;
 
-const lineInput = document.getElementById("lineInput");
+let currentAudio = null;
+let audioContext = null;
+let gainNode = null;
 
+const lineInput = document.getElementById("lineInput");
 const lineInfo = document.getElementById("lineInfo");
 const lineNumber = document.getElementById("lineNumber");
 const directionName = document.getElementById("directionName");
-
 const stopPanel = document.getElementById("stopPanel");
 const stopCounter = document.getElementById("stopCounter");
 const stopName = document.getElementById("stopName");
@@ -17,242 +18,146 @@ const message = document.getElementById("message");
 
 
 // ========================================
-// ZVUK AKTUÁLNÍ ZASTÁVKY
-// ========================================
-
-let currentAudio = null;
-
-function stopCurrentAudio() {
-
-    if (currentAudio) {
-
-        currentAudio.pause();
-        currentAudio.currentTime = 0;
-        currentAudio = null;
-
-    }
-
-}
-
-
-function playStopSound(stop) {
-
-    // Pokud zastávka nemá data
-    if (!stop) {
-
-        console.log("Zastávka nemá data.");
-        return;
-
-    }
-
-
-    // Pokud zastávka nemá nastavený zvuk
-    if (!stop.sound) {
-
-        console.log(
-            "Zastávka nemá nastavený zvuk:",
-            stop.name
-        );
-
-        return;
-
-    }
-
-
-    // Zastavení předchozího zvuku
-    stopCurrentAudio();
-
-
-    // Přesná cesta k souboru z lines.json
-    const soundPath = stop.sound;
-
-
-    console.log(
-        "Přehrávám zvuk zastávky:",
-        stop.name
-    );
-
-    console.log(
-        "Soubor:",
-        soundPath
-    );
-
-
-    // Vytvoření audia
-    currentAudio = new Audio(soundPath);
-
-    currentAudio.volume = 1.0;
-
-
-    // Přehrání
-    currentAudio.play()
-        .then(() => {
-
-            console.log(
-                "Zvuk byl spuštěn:"
-            );
-
-            console.log(soundPath);
-
-        })
-        .catch(error => {
-
-            console.error(
-                "Zvuk se nepodařilo přehrát:",
-                error
-            );
-
-            message.textContent =
-                "Nepodařilo se přehrát zvuk zastávky.";
-
-        });
-
-
-    // Po skončení zvuku uvolníme audio
-    currentAudio.addEventListener(
-        "ended",
-        function() {
-
-            currentAudio = null;
-
-        }
-    );
-
-}
-
-
-// ========================================
-// POMOCNÁ FUNKCE PRO ZASTÁVKU
-// ========================================
-
-function getStopData(stop) {
-
-    // ====================================
-    // NOVÝ FORMÁT
-    // ====================================
-
-    /*
-        {
-            "name": "Střelice, nádraží",
-            "sound": "sounds/nádr.m4a"
-        }
-    */
-
-    if (
-        typeof stop === "object" &&
-        stop !== null
-    ) {
-
-        return stop;
-
-    }
-
-
-    // ====================================
-    // STARÝ FORMÁT
-    // ====================================
-
-    /*
-        "Střelice, nádraží"
-    */
-
-    return {
-
-        name: stop,
-        sound: null
-
-    };
-
-}
-
-
-// ========================================
-// NAČTENÍ DATABÁZE
+// NAČTENÍ LINES.JSON
 // ========================================
 
 fetch("lines.json")
-
     .then(response => {
-
         if (!response.ok) {
-
-            throw new Error(
-                "Nelze načíst lines.json"
-            );
-
+            throw new Error("Nepodařilo se načíst lines.json");
         }
 
         return response.json();
-
     })
-
     .then(data => {
-
         linesData = data;
-
-        console.log(
-            "Databáze linek načtena."
-        );
-
-        lineInput.focus();
-
+        console.log("Linky načteny:", linesData);
     })
-
     .catch(error => {
+        console.error("Chyba při načítání linek:", error);
 
-        console.error(error);
-
-        message.textContent =
-            "Chyba: nepodařilo se načíst databázi linek.";
-
+        if (message) {
+            message.textContent = "CHYBA NAČTENÍ DAT";
+        }
     });
 
 
 // ========================================
-// ENTER = POTVRDIT KÓD
+// AUDIO
 // ========================================
 
-lineInput.addEventListener(
-    "keydown",
-    function(event) {
+function initAudio() {
+    if (!audioContext) {
+        audioContext = new (
+            window.AudioContext ||
+            window.webkitAudioContext
+        )();
 
+        gainNode = audioContext.createGain();
+
+        // 200 % hlasitost
+        gainNode.gain.value = 2.0;
+
+        gainNode.connect(audioContext.destination);
+    }
+
+    if (audioContext.state === "suspended") {
+        audioContext.resume();
+    }
+}
+
+
+// ========================================
+// PŘEHRÁNÍ ZVUKU
+// ========================================
+
+function playSound(soundPath) {
+    if (!soundPath) {
+        return;
+    }
+
+    initAudio();
+
+    // Zastavení předchozího zvuku
+    if (currentAudio) {
+        try {
+            currentAudio.pause();
+            currentAudio.currentTime = 0;
+        } catch (error) {
+            console.log("Nepodařilo se zastavit předchozí zvuk.");
+        }
+    }
+
+    const audio = new Audio(soundPath);
+
+    // Základní hlasitost
+    audio.volume = 1.0;
+
+    currentAudio = audio;
+
+    const source = audioContext.createMediaElementSource(audio);
+
+    // Zvuk jde přes zesilovač 200 %
+    source.connect(gainNode);
+
+    audio.play()
+        .then(() => {
+            console.log("Přehrávám:", soundPath);
+        })
+        .catch(error => {
+            console.error("Zvuk se nepodařilo přehrát:", error);
+        });
+}
+
+
+// ========================================
+// ZVUK AKTUÁLNÍ ZASTÁVKY
+// ========================================
+
+function playStopSound(stop) {
+    if (!stop) {
+        return;
+    }
+
+    // Podpora starého formátu:
+    // "Střelice, nádraží"
+    if (typeof stop === "string") {
+        return;
+    }
+
+    if (stop.sound) {
+        playSound(stop.sound);
+    }
+}
+
+
+// ========================================
+// ENTER - NAČTENÍ LINKY
+// ========================================
+
+if (lineInput) {
+    lineInput.addEventListener("keydown", event => {
         if (event.key === "Enter") {
-
             event.preventDefault();
-
             loadLine();
-
         }
-
-    }
-);
+    });
+}
 
 
 // ========================================
-// KLÁVESNICE
+// PLUS - DALŠÍ ZASTÁVKA
 // ========================================
 
-document.addEventListener(
-    "keydown",
-    function(event) {
-
-        // =================================
-        // + = DALŠÍ ZASTÁVKA
-        // =================================
-
-        if (
-            event.key === "+" ||
-            event.code === "NumpadAdd"
-        ) {
-
-            event.preventDefault();
-
-            nextStop();
-
-        }
-
+document.addEventListener("keydown", event => {
+    if (
+        event.key === "+" ||
+        event.code === "NumpadAdd"
+    ) {
+        event.preventDefault();
+        nextStop();
     }
-);
+});
 
 
 // ========================================
@@ -260,189 +165,153 @@ document.addEventListener(
 // ========================================
 
 function loadLine() {
+    if (!lineInput) {
+        return;
+    }
 
-    const code =
-        lineInput.value.trim();
-
-
-    message.textContent = "";
-
+    const code = lineInput.value.trim();
 
     // ====================================
-    // 99901 = SLUŽEBNÍ JÍZDA
+    // SLUŽEBNÍ JÍZDA
     // ====================================
 
     if (code === "99901") {
+        currentLine = {
+            number: "999",
+            "01": {
+                name: "Služební jízda",
+                stops: []
+            }
+        };
 
-        currentLine = null;
-        currentDirection = null;
+        currentDirection = "01";
         currentStop = 0;
 
+        if (lineNumber) {
+            lineNumber.textContent = "999";
+        }
 
-        // Zastavení zvuku
-        stopCurrentAudio();
+        if (directionName) {
+            directionName.textContent = "Služební jízda";
+        }
 
+        if (lineInfo) {
+            lineInfo.style.display = "block";
+        }
 
-        // Skrytí informací o lince
-        lineInfo.classList.add(
-            "hidden"
-        );
+        if (stopPanel) {
+            stopPanel.style.display = "none";
+        }
 
-
-        // Zobrazení panelu zastávky
-        stopPanel.classList.remove(
-            "hidden"
-        );
-
-
-        // Bez čísla zastávky
-        stopCounter.textContent = "";
-
-
-        // Služební jízda
-        stopName.textContent =
-            "Služební jízda";
-
-
-        stopName.classList.remove(
-            "no-boarding"
-        );
-
+        if (message) {
+            message.textContent = "SLUŽEBNÍ JÍZDA";
+        }
 
         return;
-
     }
 
 
     // ====================================
-    // KONTROLA FORMÁTU
+    // KONTROLA KÓDU
     // ====================================
 
     if (!/^\d{5}$/.test(code)) {
+        if (message) {
+            message.textContent = "NEPLATNÝ KÓD";
+        }
 
-        message.textContent =
-            "Zadej kód ve formátu 02201.";
+        if (lineInfo) {
+            lineInfo.style.display = "none";
+        }
+
+        if (stopPanel) {
+            stopPanel.style.display = "none";
+        }
 
         return;
+    }
 
+
+    // První 3 čísla = linka
+    // Poslední 2 čísla = směr
+
+    const lineCode = code.substring(0, 3);
+    const directionCode = code.substring(3, 5);
+
+    const line = linesData[lineCode];
+
+    if (!line) {
+        if (message) {
+            message.textContent = "LINKA NEEXISTUJE";
+        }
+
+        if (lineInfo) {
+            lineInfo.style.display = "none";
+        }
+
+        if (stopPanel) {
+            stopPanel.style.display = "none";
+        }
+
+        return;
+    }
+
+    const direction = line[directionCode];
+
+    if (!direction) {
+        if (message) {
+            message.textContent = "SMĚR NEEXISTUJE";
+        }
+
+        if (lineInfo) {
+            lineInfo.style.display = "none";
+        }
+
+        if (stopPanel) {
+            stopPanel.style.display = "none";
+        }
+
+        return;
     }
 
 
     // ====================================
-    // ROZDĚLENÍ KÓDU
+    // NASTAVENÍ AKTUÁLNÍ LINKY
     // ====================================
 
-    // První 3 číslice = linka
-
-    const lineCode =
-        code.substring(0, 3);
-
-
-    // Poslední 2 číslice = směr
-
-    const directionCode =
-        code.substring(3, 5);
-
-
-    // ====================================
-    // KONTROLA LINKY
-    // ====================================
-
-    if (!linesData[lineCode]) {
-
-        message.textContent =
-            "Tato linka není v databázi.";
-
-        return;
-
-    }
-
-
-    // ====================================
-    // KONTROLA SMĚRU
-    // ====================================
-
-    if (
-        !linesData[lineCode][directionCode]
-    ) {
-
-        message.textContent =
-            "Tento směr není u linky veden.";
-
-        return;
-
-    }
-
-
-    // ====================================
-    // ZASTAVENÍ PŘEDCHOZÍHO ZVUKU
-    // ====================================
-
-    stopCurrentAudio();
-
-
-    // ====================================
-    // NASTAVENÍ LINKY
-    // ====================================
-
-    currentLine =
-        lineCode;
-
-    currentDirection =
-        directionCode;
-
+    currentLine = line;
+    currentDirection = directionCode;
     currentStop = 0;
 
 
-    const line =
-        linesData[lineCode];
-
-
-    const direction =
-        line[directionCode];
-
-
     // ====================================
-    // RESET NENASTUPUJTE
+    // ZOBRAZENÍ INFORMACÍ
     // ====================================
 
-    stopName.classList.remove(
-        "no-boarding"
-    );
+    if (lineNumber) {
+        lineNumber.textContent = line.number || lineCode;
+    }
+
+    if (directionName) {
+        directionName.textContent = direction.name;
+    }
+
+    if (lineInfo) {
+        lineInfo.style.display = "block";
+    }
+
+    if (stopPanel) {
+        stopPanel.style.display = "block";
+    }
+
+    if (message) {
+        message.textContent = "";
+    }
 
 
-    // ====================================
-    // ZOBRAZENÍ LINKY
-    // ====================================
-
-    lineNumber.textContent =
-        line.number;
-
-
-    directionName.textContent =
-        direction.name;
-
-
-    // ====================================
-    // ZOBRAZENÍ PANELŮ
-    // ====================================
-
-    lineInfo.classList.remove(
-        "hidden"
-    );
-
-
-    stopPanel.classList.remove(
-        "hidden"
-    );
-
-
-    // ====================================
-    // PRVNÍ ZASTÁVKA
-    // ====================================
-
+    // První zastávka se pouze zobrazí.
+    // Její zvuk se při ENTERU nepřehraje.
     showStop();
-
 }
 
 
@@ -451,77 +320,50 @@ function loadLine() {
 // ========================================
 
 function showStop() {
-
-    // ====================================
-    // KONTROLA LINKY
-    // ====================================
-
-    if (
-        currentLine === null ||
-        currentDirection === null
-    ) {
-
+    if (!currentLine || !currentDirection) {
         return;
+    }
 
+    const direction = currentLine[currentDirection];
+
+    if (!direction || !direction.stops) {
+        return;
+    }
+
+    const stops = direction.stops;
+
+    if (currentStop < 0 || currentStop >= stops.length) {
+        return;
+    }
+
+    const stop = stops[currentStop];
+
+    let name;
+
+    // Podpora objektu:
+    // {
+    //   "name": "Střelice, nádraží",
+    //   "sound": "sounds/nádr.m4a"
+    // }
+    if (typeof stop === "object") {
+        name = stop.name;
+    } else {
+        name = stop;
     }
 
 
-    const direction =
-        linesData[currentLine][currentDirection];
-
-
-    const stops =
-        direction.stops;
-
-
-    // ====================================
-    // KONTROLA ZASTÁVEK
-    // ====================================
-
-    if (
-        !stops ||
-        stops.length === 0
-    ) {
-
-        return;
-
+    if (stopName) {
+        stopName.textContent = name;
     }
 
+    if (stopCounter) {
+        stopCounter.textContent =
+            `ZASTÁVKA ${currentStop + 1} / ${stops.length}`;
+    }
 
-    // ====================================
-    // DATA AKTUÁLNÍ ZASTÁVKY
-    // ====================================
-
-    const stop =
-        getStopData(
-            stops[currentStop]
-        );
-
-
-    // ====================================
-    // RESET NENASTUPUJTE
-    // ====================================
-
-    stopName.classList.remove(
-        "no-boarding"
-    );
-
-
-    // ====================================
-    // NÁZEV ZASTÁVKY
-    // ====================================
-
-    stopName.textContent =
-        stop.name;
-
-
-    // ====================================
-    // POČET ZASTÁVEK
-    // ====================================
-
-    stopCounter.textContent =
-        `ZASTÁVKA ${currentStop + 1} / ${stops.length}`;
-
+    if (message) {
+        message.textContent = "";
+    }
 }
 
 
@@ -530,123 +372,92 @@ function showStop() {
 // ========================================
 
 function nextStop() {
+    if (!currentLine || !currentDirection) {
+        return;
+    }
+
+    const direction = currentLine[currentDirection];
+
+    if (!direction || !direction.stops) {
+        return;
+    }
+
+    const stops = direction.stops;
+
 
     // ====================================
-    // SLUŽEBNÍ JÍZDA
+    // UŽ JE ZOBRAZENO NENASTUPUJTE
     // ====================================
 
     if (
-        currentLine === null &&
-        currentDirection === null
+        message &&
+        message.textContent === "NENASTUPUJTE"
     ) {
-
         return;
-
     }
 
 
     // ====================================
-    // KONTROLA LINKY
+    // KONEČNÁ ZASTÁVKA
     // ====================================
 
-    if (
-        !currentLine ||
-        !currentDirection
-    ) {
+    if (currentStop >= stops.length - 1) {
+
+        if (message) {
+            message.textContent = "NENASTUPUJTE";
+        }
+
+        if (stopName) {
+            stopName.textContent = "NENASTUPUJTE";
+        }
+
+        if (stopCounter) {
+            stopCounter.textContent = "KONEČNÁ ZASTÁVKA";
+        }
+
+
+        // Zastav předchozí zvuk
+        if (currentAudio) {
+            try {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+            } catch (error) {
+                console.log("Nepodařilo se zastavit zvuk.");
+            }
+        }
+
+
+        // ====================================
+        // PŘEHRÁNÍ ZVUKU KONEČNÉ
+        // ====================================
+
+        playSound("sounds/kon.m4a");
 
         return;
-
-    }
-
-
-    const direction =
-        linesData[currentLine][currentDirection];
-
-
-    const stops =
-        direction.stops;
-
-
-    // ====================================
-    // KONTROLA ZASTÁVEK
-    // ====================================
-
-    if (
-        !stops ||
-        stops.length === 0
-    ) {
-
-        return;
-
-    }
-
-
-    // ====================================
-    // NENASTUPUJTE
-    // ====================================
-
-    if (
-        stopName.classList.contains(
-            "no-boarding"
-        )
-    ) {
-
-        return;
-
     }
 
 
     // ====================================
-    // KONEČNÁ
-    // ====================================
-
-    if (
-        currentStop === stops.length - 1
-    ) {
-
-        stopName.textContent =
-            "NENASTUPUJTE";
-
-
-        stopName.classList.add(
-            "no-boarding"
-        );
-
-
-        stopCounter.textContent =
-            "KONEČNÁ ZASTÁVKA";
-
-
-        // Zastavení zvuku
-        stopCurrentAudio();
-
-
-        return;
-
-    }
-
-
-    // ====================================
-    // DALŠÍ ZASTÁVKA
+    // PŘECHOD NA DALŠÍ ZASTÁVKU
     // ====================================
 
     currentStop++;
 
-
-    // Zobrazit novou zastávku
     showStop();
 
 
     // ====================================
-    // PŘEHRÁT ZVUK NOVÉ ZASTÁVKY
+    // PŘEHRÁNÍ ZVUKU NOVÉ ZASTÁVKY
     // ====================================
 
-    const stop =
-        getStopData(
-            stops[currentStop]
-        );
-
+    const stop = stops[currentStop];
 
     playStopSound(stop);
-
 }
+
+
+// ========================================
+// START
+// ========================================
+
+console.log("SADS systém připraven.");
