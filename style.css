@@ -115,7 +115,11 @@ header p {
 .line-info {
     display: flex;
 
+    flex-direction: row;
+
     align-items: center;
+
+    justify-content: flex-start;
 
     gap: 25px;
 
@@ -126,12 +130,16 @@ header p {
     background: #22262e;
 
     border-radius: 12px;
+
+    width: 100%;
 }
 
 
 /* Číslo linky */
 
 .line-number {
+    flex: 0 0 100px;
+
     width: 100px;
     height: 75px;
 
@@ -159,7 +167,11 @@ header p {
 
     flex-direction: column;
 
+    justify-content: center;
+
     gap: 5px;
+
+    min-width: 0;
 }
 
 .direction span {
@@ -172,6 +184,12 @@ header p {
 
 .direction strong {
     font-size: 30px;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
 }
 
 
@@ -336,14 +354,24 @@ kbd {
     }
 
     .line-info {
+        flex-direction: row;
+
         padding: 15px;
+
         gap: 15px;
     }
 
     .line-number {
+        flex: 0 0 75px;
+
         width: 75px;
         height: 60px;
+
         font-size: 30px;
+    }
+
+    .direction {
+        flex: 1;
     }
 
     .direction strong {
