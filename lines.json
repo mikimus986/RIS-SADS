@@ -7,7 +7,7 @@
             "stops": [
                 {
                     "name": "Střelice, nádraží",
-                    "sound": "sounds/strelice-nadrazi.mp3"
+                    "sound": "sounds/nadr.m4a"
                 },
                 {
                     "name": "Střelice, Jaroslava svobody",
