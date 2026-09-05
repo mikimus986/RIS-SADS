@@ -12,7 +12,7 @@
                 "Střelice, Nebovidská",
                 "Nebovidy, u kostela",
                 "Moravany, hlavní",
-                "Brno, OC futurum",
+                "Brno, OC Futurum",
                 "Brno, Ústřední hřbitov"
             ]
         },
@@ -21,13 +21,49 @@
             "name": "Střelice, nádraží",
             "stops": [
                 "Brno, Ústřední hřbitov",
-                "Brno, OC futurum",
+                "Brno, OC Futurum",
                 "Moravany, hlavní",
                 "Nebovidy, u kostela",
                 "Střelice, Nebovidská",
                 "Střelice, Obecní úřad",
                 "Střelice, Nákupní středisko",
                 "Střelice, Jaroslava svobody",
+                "Střelice, nádraží"
+            ]
+        },
+
+        "03": {
+            "name": "Střelice, Nebovidská",
+            "stops": [
+                "Střelice, nádraží",
+                "Střelice, Jaroslava svobody",
+                "Střelice, Nákupní středisko",
+                "Střelice, Obecní úřad",
+                "Střelice, Nebovidská"
+            ]
+        },
+
+        "04": {
+            "name": "Střelice, nádraží",
+            "stops": [
+                "Brno, OC Futurum",
+                "Moravany, hlavní",
+                "Nebovidy, u kostela",
+                "Střelice, Nebovidská",
+                "Střelice, Obecní úřad",
+                "Střelice, Nákupní středisko",
+                "Střelice, Jaroslava svobody",
+                "Střelice, nádraží"
+            ]
+        },
+
+        "05": {
+            "name": "Střelice, nádraží",
+            "stops": [
+                "Střelice, Nebovidská",
+                "Střelice, Obecní úřad",
+                "Střelice, Nákupní středisko",
+                "Střelice, Jaroslava Svobody",
                 "Střelice, nádraží"
             ]
         }
