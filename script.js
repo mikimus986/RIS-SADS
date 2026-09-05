@@ -56,7 +56,7 @@ function initAudio() {
         gainNode = audioContext.createGain();
 
         // 200 % hlasitost
-        gainNode.gain.value = 5.0;
+        gainNode.gain.value = 7.0;
 
         gainNode.connect(audioContext.destination);
     }
@@ -205,6 +205,123 @@ function loadLine() {
 
         if (message) {
             message.textContent = "SLUŽEBNÍ JÍZDA";
+        }
+
+        return;
+    }
+
+    // ====================================
+    // Zájezd
+    // ====================================
+
+    if (code === "00001") {
+        currentLine = {
+            number: "000",
+            "01": {
+                name: "Zájezd",
+                stops: []
+            }
+        };
+
+        currentDirection = "01";
+        currentStop = 0;
+
+        if (lineNumber) {
+            lineNumber.textContent = "000";
+        }
+
+        if (directionName) {
+            directionName.textContent = "Zájezd";
+        }
+
+        if (lineInfo) {
+            lineInfo.style.display = "block";
+        }
+
+        if (stopPanel) {
+            stopPanel.style.display = "none";
+        }
+
+        if (message) {
+            message.textContent = "ZÁJEZD";
+        }
+
+        return;
+    }
+
+    // ====================================
+    // Speciální akce
+    // ====================================
+
+    if (code === "00002") {
+        currentLine = {
+            number: "000",
+            "02": {
+                name: "Speciální akce",
+                stops: []
+            }
+        };
+
+        currentDirection = "02";
+        currentStop = 0;
+
+        if (lineNumber) {
+            lineNumber.textContent = "000";
+        }
+
+        if (directionName) {
+            directionName.textContent = "Speciální akce";
+        }
+
+        if (lineInfo) {
+            lineInfo.style.display = "block";
+        }
+
+        if (stopPanel) {
+            stopPanel.style.display = "none";
+        }
+
+        if (message) {
+            message.textContent = "SPECIÁLNÍ AKCE";
+        }
+
+        return;
+    }
+
+    // ====================================
+    // SADS
+    // ====================================
+
+    if (code === "00003") {
+        currentLine = {
+            number: "000",
+            "03": {
+                name: "SADS",
+                stops: []
+            }
+        };
+
+        currentDirection = "03";
+        currentStop = 0;
+
+        if (lineNumber) {
+            lineNumber.textContent = "000";
+        }
+
+        if (directionName) {
+            directionName.textContent = "SADS";
+        }
+
+        if (lineInfo) {
+            lineInfo.style.display = "block";
+        }
+
+        if (stopPanel) {
+            stopPanel.style.display = "none";
+        }
+
+        if (message) {
+            message.textContent = "SADS";
         }
 
         return;
