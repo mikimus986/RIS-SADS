@@ -7,11 +7,11 @@
             "stops": [
                 {
                     "name": "Střelice, nádraží",
-                    "sound": "sounds/nadr.m4a"
+                    "sound": "sounds/nádr.m4a"
                 },
                 {
                     "name": "Střelice, Jaroslava svobody",
-                    "sound": "sounds/strelice-jaroslava-svobody.mp3"
+                    "sound": "sounds/jar.m4a"
                 },
                 {
                     "name": "Střelice, Nákupní středisko",
